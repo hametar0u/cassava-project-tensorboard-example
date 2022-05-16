@@ -4,7 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 
 
-def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
+def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, writer):
     """
     Trains and evaluates a model.
 
@@ -27,9 +27,13 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
         val_dataset, batch_size=batch_size, shuffle=True
     )
 
+    x = torch.arange(-5, 5, 0.1).view(-1, 1) #temporary data values
+    y = -5 * x + 0.1 * torch.randn(x.size())
+
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
-    loss_fn = nn.CrossEntropyLoss()
+    # loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.MSELoss()
 
     step = 0
     for epoch in range(epochs):
@@ -38,6 +42,12 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
         # Loop over each batch in the dataset
         for batch in tqdm(train_loader):
             # TODO: Backpropagation and gradient descent
+            y1 = model(x)
+            loss = loss_fn(y1, y)
+            writer.add_scalar("Loss/train", loss, epoch)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
