@@ -1,5 +1,8 @@
 # ACM AI Projects Skeleton Code
 
+## Tensorboard documentation
+https://imported-tugboat-fe6.notion.site/How-to-Tensorboard-c8ee685518e7403a80053b91e0ab6c92
+
 ## Setup
 
 1. Create a new conda environment.
